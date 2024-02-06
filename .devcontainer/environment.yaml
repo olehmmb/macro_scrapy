@@ -1,5 +1,9 @@
-name: base
+name: macro
 channels:
   - conda-forge
 dependencies:
-  - python
+  - python=3.12.1=hab00c5b_1_cpython
+  - pip=24.0=pyhd8ed1ab_0
+  - pip:
+      - scrapy-playwright==0.0.34
+prefix: /opt/conda/envs/macro

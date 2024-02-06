@@ -2,8 +2,10 @@
     "name": "Scraping",
     "build":{
         "dockerfile": "Dockerfile",
-        "context": "../"
-    }, 
+        "context": "../",
+        "args": { "HTTP_PROXY": "${localEnv:HTTP_PROXY}",
+                  "HTTPS_PROXY": "${localEnv:HTTPS_PROXY}" }
+    },
     "customizations": {
         "vscode": {
             "extensions": [
@@ -15,3 +17,6 @@
         }
     }  
 }
+
+
+ 
