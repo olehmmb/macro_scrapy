@@ -4,8 +4,10 @@
         "dockerfile": "Dockerfile",
         "context": "../",
         "args": { "HTTP_PROXY": "${localEnv:HTTP_PROXY}",
-                  "HTTPS_PROXY": "${localEnv:HTTPS_PROXY}" }
+                  "HTTPS_PROXY": "${localEnv:HTTPS_PROXY}" 
+                }
     },
+    "runArgs": ["--env-file",".devcontainer/devcontainer.env"],
     "customizations": {
         "vscode": {
             "extensions": [
@@ -18,5 +20,3 @@
     }  
 }
 
-
- 
