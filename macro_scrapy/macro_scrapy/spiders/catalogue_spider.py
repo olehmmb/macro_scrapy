@@ -1,41 +1,46 @@
-from typing import Iterable
-import os
 import scrapy
-from scrapy.http import Request
-from macro_scrapy.items import QuoteItem
 from scrapy_playwright.page import PageMethod
 
 
 class QuotesSpider(scrapy.Spider):
-    name = 'catalogue'
+    name = "catalogue"
     # allowed_domains = ['quotes.toscrape.com']
     # start_urls = ['http://quotes.toscrape.com/']
-    custom_settings = {
-        "PLAYWRIGHT_LAUNCH_OPTIONS": {
-            "proxy": {
-                "server": os.environ.get("server"),
-                "username": os.environ.get("username"),
-                "password": os.environ.get("password"),
-            },
-        }
-    }
+#    custom_settings = {
+#        "PLAYWRIGHT_LAUNCH_OPTIONS": {
+#            "proxy": {
+#                "server": os.environ.get("server"),
+#                "username": os.environ.get("username"),
+#                "password": os.environ.get("password"),
+#            },
+#        }
+#    }
 
     def start_requests(self):
         url ="https://www.czso.cz/csu/czso/katalog-produktu"
         cookies = {
-            'cookieconsent_dismissed': 'yes'
+            "cookieconsent_dismissed": "yes"
         }
-        yield scrapy.Request(url,cookies=cookies, meta=dict(
-            playwright= True,
-            playwright_include_page= True,
-            playwright_page_methods= [
-                PageMethod("click", selector="ui-paginator-rpp-options ui-widget ui-state-default ui-corner-left"),
+        yield scrapy.Request(url,cookies=cookies, meta={
+            "playwright": True,
+            "playwright_include_page": True,
+            "playwright_page_methods": [
+                PageMethod("click",selector="//*[@id='gdpr-cookie-disagree']"),
+                PageMethod("fill", "//*[@id='A5095:vyhledavani']",  value="260004"),
+                PageMethod("click", "//*[@id='A5095:buttonVyhledej']"),
+
+                PageMethod("wait_for_selector", selector="//*[@id='A5095:tabulkaTerminuProduktu_paginator_bottom']/select"),
+                #PageMethod("select_option", selector="//*[@id='A5095:tabulkaTerminuProduktu_paginator_bottom']/select",value="500"),
+                #PageMethod("wait_for_selector", selector="//*[@id='A5095:tabulkaTerminuProduktu_data']/tr[500]"),
+                PageMethod("wait_for_load_state", "networkidle")
+
+                #PageMethod("click", selector="//*[@id='A5095:tabulkaTerminuProduktu_paginator_bottom']/select"),
                 # PageMethod("evaluate", "window.scrollBy(0, document.body.scrollHeight)"),
                 # PageMethod("waitForSelector", "div.quote:nth-child(11)"), # 10 page
 
             ],
-            errBack=self.handle_failure
-        ))
+            "errBack": self.handle_failure
+        })
 
     async def parse(self, response):
         page = response.meta["playwright_page"]

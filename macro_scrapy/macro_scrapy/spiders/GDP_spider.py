@@ -1,8 +1,10 @@
 import scrapy
-from macro_scrapy.items import MacroScrapyItem 
+
+from macro_scrapy.items import MacroScrapyItem
+
 
 class GDPSpider(scrapy.Spider):
-    name = "GDP"
+    name = "gdp"
 
     def start_requests(self):
         urls = [
@@ -16,8 +18,8 @@ class GDPSpider(scrapy.Spider):
     def parse(self, response):
         file_title = file_url = response.xpath("//a[text()='Stahnout vše v jednom souboru XLSX']/@title").get()
         file_url = response.xpath("//a[text()='Stahnout vše v jednom souboru XLSX']/@href").get()
-        file_url = response.urljoin(file_url) 
-        item = MacroScrapyItem() 
-        item['file_urls'] = [file_url] 
-        item['original_file_name'] = [file_title] 
-        yield item 
+        file_url = response.urljoin(file_url)
+        item = MacroScrapyItem()
+        item["file_urls"] = [file_url]
+        item["original_file_name"] = [file_title]
+        yield item

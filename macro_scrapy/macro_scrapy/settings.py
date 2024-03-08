@@ -6,6 +6,7 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+import os
 
 BOT_NAME = "macro_scrapy"
 
@@ -97,4 +98,11 @@ DOWNLOAD_HANDLERS = {
 }
 PLAYWRIGHT_LAUNCH_OPTIONS = {
         "headless": True,
-} 
+        }
+PLAYWRIGHT_LAUNCH_OPTIONS = {
+    "proxy": {
+        "server": os.environ.get("SERVER"),
+        "username": os.environ.get("USERNAME"),
+        "password": os.environ.get("PASSWORD"),
+        },
+    }
