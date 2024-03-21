@@ -5,6 +5,22 @@ from scrapy.http import Request
 from macro_scrapy.items import QuoteItem
 from scrapy_playwright.page import PageMethod
 
+class QuotesSpider(scrapy.Spider):
+    name = "quotes"
+
+    start_urls = [
+        'http://quotes.toscrape.com/page/1/'
+    ]
+    
+    def parse(self, response):
+        for quote in response.css("div.quote"):
+            yield {
+                'text': quote.css("span.text::text").extract_first().replace("\u201c","").replace("\u201d",""),
+                'author': quote.css("small.author::text").extract_first(),
+                'tags': quote.css("div.tags a.tag::text").extract(),
+            }
+        
+
 
 class QuotesScrollSpider(scrapy.Spider):
     name = 'quotesscroll'
