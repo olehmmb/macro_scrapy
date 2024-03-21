@@ -1,3 +1,5 @@
+from datetime import datetime as dt
+
 # Scrapy settings for macro_scrapy project
 #
 # For simplicity, this file contains only settings considered important or
@@ -51,8 +53,11 @@ ROBOTSTXT_OBEY = False
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
+
 #DOWNLOADER_MIDDLEWARES = {
 #    "macro_scrapy.middlewares.MacroScrapyDownloaderMiddleware": 543,
+#    "scrapy.downloadermiddlewares.redirect.RedirectMiddleware": None,
+#    "scrapy.downloadermiddlewares.cookies.CookiesMiddleware": 700,
 #}
 
 # Enable or disable extensions
@@ -66,7 +71,13 @@ ROBOTSTXT_OBEY = False
 ITEM_PIPELINES = {
     "macro_scrapy.pipelines.MacroScrapyPipeline": 1,
 }
-FILES_STORE = r"/workspaces/macro_scrapy/downloaded"
+#ITEM_PIPELINES = {
+# 'scrapy.pipelines.files.FilesPipeline': 1,
+#}
+
+CURRENT_DATE = dt.today().strftime('%Y%m%d')
+FILES_STORE = fr"C:\\Users\212627578\PythonProjects\macro_scrapy\data\{CURRENT_DATE}\input"
+
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
 #AUTOTHROTTLE_ENABLED = True
