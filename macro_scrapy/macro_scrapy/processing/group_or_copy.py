@@ -1,8 +1,9 @@
-from datetime import datetime as dt
-import polars as pl
-import numpy as np
-import shutil
 import os
+import shutil
+from datetime import datetime as dt
+
+import numpy as np
+import polars as pl
 
 current_date = dt.now()
 folder_name = current_date.strftime("%Y%m%d")

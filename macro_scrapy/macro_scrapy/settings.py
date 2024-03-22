@@ -76,7 +76,7 @@ ITEM_PIPELINES = {
 #}
 
 CURRENT_DATE = dt.today().strftime('%Y%m%d')
-FILES_STORE = fr"C:\\Users\212627578\PythonProjects\macro_scrapy\data\{CURRENT_DATE}\input"
+FILES_STORE = fr"C:\\Users\123058850\Petr\Python\macro_scrapy\data\{CURRENT_DATE}\input"
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
@@ -103,17 +103,18 @@ FILES_STORE = fr"C:\\Users\212627578\PythonProjects\macro_scrapy\data\{CURRENT_D
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
-DOWNLOAD_HANDLERS = {
-    "http": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
-    "https": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
-}
-PLAYWRIGHT_LAUNCH_OPTIONS = {
-        "headless": True,
-        }
-PLAYWRIGHT_LAUNCH_OPTIONS = {
-    "proxy": {
-        "server": os.environ.get("SERVER"),
-        "username": os.environ.get("USERNAME"),
-        "password": os.environ.get("PASSWORD"),
-        },
-    }
+MEDIA_ALLOW_REDIRECTS = True
+#DOWNLOAD_HANDLERS = {
+#    "http": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+#    "https": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+#}
+#PLAYWRIGHT_LAUNCH_OPTIONS = {
+#        "headless": True,
+#        }
+#PLAYWRIGHT_LAUNCH_OPTIONS = {
+#    "proxy": {
+#        "server": os.environ.get("SERVER"),
+#        "username": os.environ.get("USERNAME"),
+#        "password": os.environ.get("PASSWORD"),
+#        },
+#    }
