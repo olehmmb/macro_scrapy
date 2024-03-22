@@ -35,7 +35,7 @@ class GDPSpider(scrapy.Spider):
         for name, value in urls.items():
             yield scrapy.Request(url=value["url"],callback=self.parse,cb_kwargs = {"name":name, "xpath":value["xpath"]})
 
-    def parse(self, response: str, name: str, xpath: str) -> Generator[Any, Any, Any]:
+    def parse(self, response: scrapy.http.response.Response, name: str, xpath: str) -> Generator[Any, Any, Any]:
         file_url = response.xpath(xpath).get() if xpath != "" else response.url
         file_url = response.urljoin(file_url)
         item = MacroScrapyItem()
