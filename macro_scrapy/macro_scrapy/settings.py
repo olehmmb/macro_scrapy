@@ -1,5 +1,6 @@
 from datetime import datetime as dt
-
+from pathlib import Path
+CURRENT_DATE = dt.today().strftime('%Y%m%d')
 # Scrapy settings for macro_scrapy project
 #
 # For simplicity, this file contains only settings considered important or
@@ -8,7 +9,7 @@ from datetime import datetime as dt
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-import os
+
 
 BOT_NAME = "macro_scrapy"
 
@@ -71,13 +72,8 @@ ROBOTSTXT_OBEY = False
 ITEM_PIPELINES = {
     "macro_scrapy.pipelines.MacroScrapyPipeline": 1,
 }
-#ITEM_PIPELINES = {
-# 'scrapy.pipelines.files.FilesPipeline': 1,
-#}
 
-CURRENT_DATE = dt.today().strftime('%Y%m%d')
-FILES_STORE = fr"C:\\Users\123058850\Petr\Python\macro_scrapy\data\{CURRENT_DATE}\input"
-
+FILES_STORE = Path(fr"C:/Users/123058850/Petr/Python/macro_scrapy/data/{CURRENT_DATE}/input")
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
 #AUTOTHROTTLE_ENABLED = True
