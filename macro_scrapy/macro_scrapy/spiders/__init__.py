@@ -1,4 +1,12 @@
-# This package will contain the spiders of your Scrapy project
-#
-# Please refer to the documentation for information on how to create and manage
-# your spiders.
+"""Spider management package.
+
+This package provides resources for spiders.
+It introduces variables that are subsequently used for storing raw data.
+"""
+
+from datetime import datetime as dt
+from datetime import timezone
+
+parent_folder = r"C:\Users\212627578\PythonProjects\macro_scrapy"
+current_date = dt.now(tz=timezone.utc)
+folder_name = current_date.strftime("%Y%m%d")

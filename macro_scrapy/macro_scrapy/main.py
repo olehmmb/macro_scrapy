@@ -1,7 +1,6 @@
-from datetime import datetime as dt
-from datetime import timezone
 from pathlib import Path
 
+from __init__ import folder_name, parent_folder
 from scrapy import spiderloader
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils import project
@@ -10,17 +9,14 @@ from scrapy.utils import project
 def create_folder() -> None:
 
     # Create a folder with current date as a name, where the scraped data will be stored
-    current_date = dt.now(tz=timezone.utc)
-    folder_name = current_date.strftime("%Y%m%d")
-    folder_path = fr"C:\Users\212627578\PythonProjects\macro_scrapy\data\{folder_name}"
+    folder_path = fr"{parent_folder}\data\{folder_name}"
     Path.mkdir(folder_path, exist_ok=True)
 
     # Create input / output folders for clearer manipulation with the data
-    parent_folder = fr"C:\Users\212627578\PythonProjects\macro_scrapy\data\{folder_name}"
     subfolder1 = "input"
     subfolder2 = "output"
-    Path(Path(parent_folder) / subfolder1, exist_ok=True).mkdir(parents=True)
-    Path(Path(parent_folder) / subfolder2, exist_ok=True).mkdir(parents=True)
+    Path(Path(folder_path) / subfolder1, exist_ok=True).mkdir(parents=True)
+    Path(Path(folder_path) / subfolder2, exist_ok=True).mkdir(parents=True)
 
 def run_spiders() -> None:
 
