@@ -1,15 +1,10 @@
 import re
-from datetime import datetime as dt
-from datetime import timedelta, timezone
 from typing import Any, Generator
 
 import scrapy
 
 from macro_scrapy.items import MacroScrapyItem
 
-current_date = dt.now(tz=timezone.utc)
-last_month = current_date - timedelta(days=current_date.day)
-last_month_adj = last_month.strftime("%Y/%m")
 
 class ElectricitySpider(scrapy.Spider):
     name = "Electricity"
