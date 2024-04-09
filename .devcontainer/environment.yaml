@@ -4,6 +4,4 @@ channels:
 dependencies:
   - scrapy
   - pip
-  - pip:
-      - scrapy-playwright
 prefix: /opt/conda/envs/macro_scrapy

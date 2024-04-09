@@ -11,3 +11,5 @@ class MacroScrapyItem(scrapy.Item):
     original_file_name = scrapy.Field()
     files = scrapy.Field()
     table_data = scrapy.Field()
+    Month = scrapy.Field()
+    Saldo = scrapy.Field()
