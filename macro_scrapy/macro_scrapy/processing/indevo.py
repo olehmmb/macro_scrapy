@@ -1,41 +1,37 @@
 import polars as pl
-from __init__ import average_every_4, folder_name, parent_folder
+from __init__ import (
+    combine_lists_monthly,
+    current_year,
+    folder_name,
+    list_growth,
+    monthly_data,
+    parent_folder,
+    row_selection,
+)
 
-row =5
-file_name = "_IndustrialEvolution_"
-columns = [21, 71, 207]
-names = ["Y", "Q", "M"]
+file_name = "IndustrialEvolution"
+row = 5
+columns = [207, 71, 21]
 
+yearly_indevo_df = pl.read_excel(fr"{parent_folder}\data\{folder_name}\input\{folder_name}_{file_name}_Y.xlsx")
+quarterly_indevo_df = pl.read_excel(fr"{parent_folder}\data\{folder_name}\input\{folder_name}_{file_name}_Q.xlsx")
+monthly_indevo_df = pl.read_excel(fr"{parent_folder}\data\{folder_name}\input\{folder_name}_{file_name}_M.xlsx")
 
-yearly_indevo_df = pl.read_excel(fr"{parent_folder}\data\{folder_name}\input\{folder_name}_IndustrialEvolution_Y.xlsx")
-quarterly_indevo_df = pl.read_excel(fr"{parent_folder}\data\{folder_name}\input\{folder_name}_IndustrialEvolution_Q.xlsx")
-monthly_indevo_df = pl.read_excel(fr"{parent_folder}\data\{folder_name}\input\{folder_name}_IndustrialEvolution_M.xlsx")
+monthly_indevo_df = row_selection(monthly_indevo_df, row, columns[0])
+quarterly_indevo_df = row_selection(quarterly_indevo_df, row, columns[1])
+yearly_indevo_df = row_selection(yearly_indevo_df, row, columns[2])
 
-yearly_indevo_df = yearly_indevo_df[5,21:]
-yearly_indevo_df = yearly_indevo_df.transpose(include_header=False)
-formatted_df_y = yearly_indevo_df.select(pl.col("column_0").cast(pl.Float64).alias("Industrial Production"))
+renamed_df_m = monthly_indevo_df.select(pl.col("column_0").cast(pl.Float64).alias("Industrial Production"))
+renamed_df_q = quarterly_indevo_df.select(pl.col("column_0").cast(pl.Float64).alias("Industrial Production"))
+renamed_df_y = yearly_indevo_df.select(pl.col("column_0").cast(pl.Float64).alias("Industrial Production"))
 
-quarterly_indevo_df = quarterly_indevo_df[5,71:]
-quarterly_indevo_df = quarterly_indevo_df.transpose(include_header=False)
-formatted_df_q = quarterly_indevo_df.select(pl.col("column_0").cast(pl.Float64).alias("Industrial Production"))
+growth_m = list_growth(renamed_df_m)
+growth_q = list_growth(renamed_df_q)
+growth_y = list_growth(renamed_df_y)
 
-monthly_indevo_df = monthly_indevo_df[5,207:]
-monthly_indevo_df = monthly_indevo_df.transpose(include_header=False)
-formatted_df_m = monthly_indevo_df.select(pl.col("column_0").cast(pl.Float64).alias("Industrial Production"))
+final_list = combine_lists_monthly(growth_m, growth_q, growth_y)
+date_list = monthly_data(current_year - 2018)
 
-growth_yoy = []
-growth_q = []
-growth_m = []
-
-for i in formatted_df_y:
-    growth = i-100
-    growth_yoy.append(growth)
-
-for i in formatted_df_q:
-    growth = i-100
-    growth_q.append(growth)
-
-for i in formatted_df_m:
-    growth = i-100
-    growth_m.append(growth)
-
+final_list = final_list + [0] * (len(date_list) - len(final_list))
+final_df = pl.DataFrame({"Time": date_list, "Industrial Production Growth": final_list})
+final_df.write_excel(fr"{parent_folder}\data\{folder_name}\output\{folder_name}_IndustrialEvolution.xlsx", worksheet = "IndEvo")
