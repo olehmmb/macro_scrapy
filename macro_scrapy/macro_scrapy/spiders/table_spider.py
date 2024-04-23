@@ -2,12 +2,13 @@ from typing import Any, Generator
 
 import scrapy
 from scrapy.utils.project import get_project_settings
-
+from macro_scrapy.items import MacroScrapyItem
+from macro_scrapy.settings import CURRENT_DATE
 
 class TableSpider(scrapy.Spider):
     name = "table_spider"
     custom_settings = {
-        "FEEDS": {get_project_settings().get("FILES_STORE") /  "MFCR_state_deficit.csv": {"format": "csv",
+        "FEEDS": {get_project_settings().get("FILES_STORE") /  fr"{CURRENT_DATE}_MFCR_state_deficit.csv": {"format": "csv",
                                   "overwrite": True,
                                   "store_empty": True}}
         }

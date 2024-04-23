@@ -7,7 +7,9 @@
                   "HTTPS_PROXY": "${localEnv:HTTPS_PROXY}" 
                 }
     },
-    "runArgs": ["--env-file",".devcontainer/devcontainer.env"],
+    "remoteEnv": { "HTTP_PROXY": "${localEnv:HTTP_PROXY}",
+                   "HTTPS_PROXY": "${localEnv:HTTPS_PROXY}" 
+  },
     "customizations": {
         "vscode": {
             "extensions": [
