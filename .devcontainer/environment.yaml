@@ -5,6 +5,5 @@ dependencies:
   - scrapy
   - pip
   - pip:
-      - scrapy-playwright
       - xls2xlsx
 prefix: /opt/conda/envs/macro_scrapy
