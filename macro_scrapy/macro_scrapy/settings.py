@@ -73,6 +73,7 @@ ITEM_PIPELINES = {
     "macro_scrapy.pipelines.MacroScrapyPipeline": 1,
 }
 
+
 FILES_STORE = Path(fr"/workspaces/macro_scrapy/data/{CURRENT_DATE}/input")
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html

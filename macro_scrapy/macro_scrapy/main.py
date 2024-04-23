@@ -27,8 +27,7 @@ def run_spiders() -> None:
     spider_loader = spiderloader.SpiderLoader.from_settings(settings)
 
     # List all spiders you would like to run
-    spider_names = ["Electricity", "Gas", "Unemployment", "Foreign", "GDP", "Households"
-                ,"IndOrd", "IndEvo", "Retail", "Savings", "Sentiment", "Wages", "Debt"]
+    spider_names = ["files_spider"]
 
     for spider_name in spider_names:
         # Retrieve spider by name

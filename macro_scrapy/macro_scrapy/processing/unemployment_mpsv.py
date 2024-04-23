@@ -4,7 +4,7 @@ from pathlib import Path
 import polars as pl
 from __init__ import folder_name, parent_folder
 
-zip_file = "Unemployment_MPSV.zip"
+zip_file = "Unemployment.zip"
 folder_path = fr"{parent_folder}\data\{folder_name}"
 zip_file_path = fr"{parent_folder}\data\{folder_name}\input\{folder_name}_{zip_file}"
 
