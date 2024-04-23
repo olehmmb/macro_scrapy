@@ -60,6 +60,8 @@ class GDPSpider(scrapy.Spider):
                                    "xpath":"//a[contains(text(), 'indikátorů')]/@href"},
             "Savings.xlsx":{"url":"https://www.czso.cz/documents/11350/191095591/csu010524_1.xlsx/a0a3e0bc-794f-4d20-b085-5d95d3505dba?version=1.0",
                                    "xpath":""},
+            "Capacity.xlsx":{"url":"https://www.czso.cz/documents/11350/218351664/gkpr012424_4.xlsx/d2605378-9cc1-4cc9-b701-7e766cf29ebb?version=1.0",
+                                   "xpath":""},
             "Sentiment.xlsx":{"url":"https://www.czso.cz/documents/11350/218351664/gkpr012424_5.xlsx/c4b9fb47-f5db-4b6a-9e1a-88f1c8efbdff?version=1.0",
                                    "xpath":""},
             "GrossWage.xlsx":{"url":"https://www.czso.cz/documents/11350/190537026/gpmz030524.xlsx/387a2ec7-c808-4915-9cdf-0720c82e21d5?version=1.0",

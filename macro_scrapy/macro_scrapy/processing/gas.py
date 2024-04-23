@@ -3,7 +3,7 @@ import os
 import zipfile
 
 import polars as pl
-from __init__ import current_year, folder_name, monthly_data_no_QY, parent_folder
+from __init__ import current_year, folder_name, monthly_data_no_qy, parent_folder
 from xls2xlsx import XLS2XLSX
 
 zip_file = "Gas.zip"
@@ -54,7 +54,7 @@ average_every_12(historical_ends_of_month)
 historical_averages.extend(averages)
 historical_ends_of_month.extend(ends_of_month)
 
-time_column = monthly_data_no_QY(3)
+time_column = monthly_data_no_qy(3)
 hist_avg = historical_averages + [0] * (len(time_column) - len(historical_averages))
 hist_end = historical_ends_of_month + [0] * (len(time_column) - len(historical_ends_of_month))
 

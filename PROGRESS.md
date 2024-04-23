@@ -6,8 +6,8 @@ Here is a doc that can be used as an overview of the project. One should thus be
 
 Currently, there are a few areas to work on regarding scraping and downloading data.
 
-- Savings and Sentiment are targeted only by a specific URL, which should be improved (using some element type for xpath etc.) ⛔
-- GrossWage and MedianWage are targeted only by a specific URL, which should be improved (using some element type for xpath etc. ⛔
+- Savings, Capacity and Sentiment are targeted only by a specific URL, which should be improved (using some element type for xpath etc.) ⛔
+- GrossWage and MedianWage are targeted only by a specific URL, which should be improved (using some element type for xpath etc.) ⛔
 
 ### Processing the data
 
@@ -20,9 +20,12 @@ Below are the specific subsections of the code that need to be addressed with th
 - Household disposable income ✅
 - Employment potential ✅
 - Commodities (Gas.py and Electricity.py) ✅
-
-  - to Solve: Input files have the .xls suffix that makes them unavailable for using polars, there is also no package included that solves this issue and the files currently need to be saved as .xlsx manually
-  - to Solve: Available data include only the current year resulting in the need to merge with some older dataset(s)
-  - to Solve: Complete the output file for both Gas and Electricity
+- Savings ✅
+- Retail ✅
+- Industrial evolution ✅
+- Foreign trade ✅
+- Capacity utilization ✅
+- Outline the next steps in terms of the data that still need to be transformed 🟡
+- Prepare the processing scripts for those and move on to the standardization 🟡
 - Standardizing the time dimensions for the whole project ⛔
 - Optimizing the code ⛔
