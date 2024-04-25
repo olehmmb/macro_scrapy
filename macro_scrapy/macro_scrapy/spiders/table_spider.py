@@ -2,8 +2,10 @@ from typing import Any, Generator
 
 import scrapy
 from scrapy.utils.project import get_project_settings
+
 from macro_scrapy.items import MacroScrapyItem
 from macro_scrapy.settings import CURRENT_DATE
+
 
 class TableSpider(scrapy.Spider):
     name = "table_spider"
