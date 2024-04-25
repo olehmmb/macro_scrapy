@@ -1,6 +1,6 @@
 import contextlib
-import os
 import zipfile
+from pathlib import Path
 
 import polars as pl
 import xlrd
@@ -27,7 +27,7 @@ for row in range(sheet.nrows):
         new_sheet.cell(row=row+1, column=col+1).value = sheet.cell_value(row, col)
 
 new_workbook.save(fr"{parent_folder}\data\{folder_name}\input\{folder_name}_Electricity.xlsx")
-os.remove(fr"{parent_folder}\data\{folder_name}\input\Rocni_zprava_o_trhu_2024_V0.xls")
+Path.unlink(fr"{parent_folder}\data\{folder_name}\input\Rocni_zprava_o_trhu_2024_V0.xls")
 
 el_df = pl.read_excel(fr"{parent_folder}\data\{folder_name}\input\{folder_name}_Electricity.xlsx")
 averages = list(filter(lambda x: x is not None, (el_df.select("_duplicated_35").to_series()).to_list()))
@@ -53,7 +53,7 @@ for index, index2 in zip(indices, indices2):
 historical_averages = [56.53, 51.06, 53.8, 60.88, 58.26, 73.83, 85.48, 85.66, 130.53, 142.1, 183.28, 233.31, 183, 157, 257, 173, 190, 237, 316, 485, 364, 174, 209, 255, 139, 143, 116, 109, 86, 99, 87, 94, 103, 96, 96, 76]
 historical_ends_of_month = [45.56, 39.93, 59.92, 68.64, 68.1, 92.38, 54.36, 109.64, 116.71, 67.15, 188.88, 84.02, 201, 225, 210, 201, 210, 335, 317, 635, 354, 145, 375, 16, 144, 148, 99, 69, 85, 112, 73, 105, 91, 106, 168, 13]
 
-def average_every_12(lst):
+def average_every_12(lst: list) -> list:
     for i in range(0, len(lst), 13):
         group = lst[i:i+12]
         group_average = sum(group)/len(group)

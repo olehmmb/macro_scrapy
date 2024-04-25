@@ -1,6 +1,6 @@
 import contextlib
-import os
 import zipfile
+from pathlib import Path
 
 import polars as pl
 from __init__ import current_year, folder_name, monthly_data_no_qy, parent_folder
@@ -19,7 +19,7 @@ with zipfile.ZipFile(zip_file_path, "r") as zip_ref:
 file_extracted = XLS2XLSX(fr"{parent_folder}\data\{folder_name}\input\Rocni_zprava_o_trhu_plyn_2024_V0.xls")
 file_extracted.to_xlsx(fr"{parent_folder}\data\{folder_name}\input\{folder_name}_Gas.xlsx")
 
-os.remove(fr"{parent_folder}\data\{folder_name}\input\Rocni_zprava_o_trhu_plyn_2024_V0.xls")
+Path.unlink(fr"{parent_folder}\data\{folder_name}\input\Rocni_zprava_o_trhu_plyn_2024_V0.xls")
 
 gas_df = pl.read_excel(fr"{parent_folder}\data\{folder_name}\input\{folder_name}_Gas.xlsx", sheet_name = "VDT")
 averages = list(filter(lambda x: x is not None, (gas_df.select("_duplicated_19").to_series()).to_list()))
@@ -42,7 +42,7 @@ for index in indices:
 historical_averages = [19.28, 18.19, 18.32, 21.37, 25.82, 29.74, 36.41, 44.74, 63.36, 87.44, 85.26, 114, 83, 81, 125, 100, 89, 101, 174, 243, 192, 66, 88, 118, 64, 55, 47, 45, 34, 34, 31, 37, 38, 44, 45, 38]
 historical_ends_of_month = [19.27, 16.68, 19.5, 24.36, 25.81, 35.7, 40.18, 49.9, 91.51, 66.06, 96.48, 76.99, 87, 106, 123, 95, 91, 148, 192, 257, 168, 50, 142, 70, 60, 50, 48, 40, 28, 37, 28, 37, 39, 43, 45, 31]
 
-def average_every_12(lst):
+def average_every_12(lst: list) -> list:
     for i in range(0, len(lst), 13):
         group = lst[i:i+12]
         group_average = sum(group)/len(group)
