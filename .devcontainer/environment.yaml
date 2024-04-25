@@ -4,6 +4,7 @@ channels:
 dependencies:
   - scrapy
   - pip
+  - polars
   - pip:
       - xls2xlsx
 prefix: /opt/conda/envs/macro_scrapy

@@ -9,14 +9,14 @@ from scrapy.utils import project
 def create_folder() -> None:
 
     # Create a folder with current date as a name, where the scraped data will be stored
-    folder_path = fr"{parent_folder}\data\{folder_name}"
-    Path.mkdir(folder_path, exist_ok=True)
+    folder_path = fr"{parent_folder}/data/{folder_name}"
+    Path(folder_path).mkdir( exist_ok=True)
 
     # Create input / output folders for clearer manipulation with the data
     subfolder1 = "input"
     subfolder2 = "output"
-    Path(Path(folder_path) / subfolder1, exist_ok=True).mkdir(parents=True)
-    Path(Path(folder_path) / subfolder2, exist_ok=True).mkdir(parents=True)
+    Path(Path(folder_path) / subfolder1).mkdir(parents=True, exist_ok=True)
+    Path(Path(folder_path) / subfolder2).mkdir(parents=True, exist_ok=True)
 
 def run_spiders() -> None:
 

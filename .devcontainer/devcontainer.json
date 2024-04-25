@@ -7,7 +7,7 @@
                   "HTTPS_PROXY": "${localEnv:HTTPS_PROXY}" 
                 }
     },
-    "remoteEnv": { "HTTP_PROXY": "${localEnv:HTTP_PROXY}",
+    "containerEnv": { "HTTP_PROXY": "${localEnv:HTTP_PROXY}",
                    "HTTPS_PROXY": "${localEnv:HTTPS_PROXY}" 
   },
     "customizations": {
