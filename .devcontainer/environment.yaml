@@ -7,4 +7,5 @@ dependencies:
   - polars
   - pip:
       - xls2xlsx
+      - fastexcel
 prefix: /opt/conda/envs/macro_scrapy
