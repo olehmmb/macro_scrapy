@@ -13,6 +13,8 @@ parent_folder = r"/workspaces/macro_scrapy"
 current_date = dt.now(tz=timezone.utc)
 current_year = current_date.year
 folder_name = current_date.strftime("%Y%m%d")
+input_path = parent_folder+"/data/"+folder_name+"/input/"+folder_name
+output_path = parent_folder+"/data/"+folder_name+"/output/"+folder_name
 quarter_months = [0, 3, 6, 9]
 months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 date_list =  []
