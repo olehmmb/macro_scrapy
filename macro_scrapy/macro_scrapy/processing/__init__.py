@@ -3,10 +3,15 @@
 This package provides resources for processing.
 It introduces variables that are subsequently used for obtaining / storing raw and processed data.
 """
+import contextlib
+import zipfile
 from datetime import datetime as dt
 from datetime import timezone
+from pathlib import Path
 
 import polars as pl
+import xlrd
+from openpyxl import Workbook
 from xls2xlsx import XLS2XLSX
 
 parent_folder = r"/workspaces/macro_scrapy"
@@ -105,3 +110,38 @@ def list_growth(sequence: any) -> list:
         growth = i-100
         growth_list.extend(growth)
     return growth_list
+
+def extract_zipfile(zip_file_path: str, file_to_extract: str, destination_folder: str) -> any:
+    with zipfile.ZipFile(zip_file_path, "r") as zip_ref:
+        zip_ref.extract(file_to_extract, destination_folder)
+
+def read_xl_workbook(file_to_extract: str, new_sheet_name: str, new_file_name: str) -> any:
+
+    book = xlrd.open_workbook(fr"{parent_folder}\data\{folder_name}\input\{file_to_extract}")
+    sheet = xlrd.book.Book.sheet_by_name(book, sheet_name=new_sheet_name)
+    new_workbook = Workbook()
+    new_sheet = new_workbook.active
+
+    for row in range(sheet.nrows):
+        for col in range(sheet.ncols):
+            new_sheet.cell(row=row+1, column=col+1).value = sheet.cell_value(row, col)
+
+    new_workbook.save(fr"{parent_folder}\data\{folder_name}\input\{folder_name}{new_file_name}")
+    Path.unlink(fr"{parent_folder}\data\{folder_name}\input\{file_to_extract}")
+
+def average_every_12(lst: list) -> list:
+    for i in range(0, len(lst), 13):
+        group = lst[i:i+12]
+        group_average = sum(group)/len(group)
+        lst.insert(i+12, group_average)
+
+def check_averages(hist_avg: list, hist_end: list) -> any:
+    for i in range(len(hist_avg)):
+        if hist_avg[i] is not None:
+            with contextlib.suppress(ValueError):
+                hist_avg[i] = float(hist_avg[i])
+
+    for i in range(len(hist_end)):
+        if hist_end[i] is not None:
+            with contextlib.suppress(ValueError):
+                hist_end[i] = float(hist_end[i])

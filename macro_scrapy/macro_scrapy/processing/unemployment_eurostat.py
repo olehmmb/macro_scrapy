@@ -1,5 +1,6 @@
 import eurostat
 import polars as pl
+from __init__ import folder_name, parent_folder
 
 data = pl.DataFrame(eurostat.get_data_df("une_rt_m"))
 data = data.rename({"geo\\TIME_PERIOD" : "geo"})
@@ -22,4 +23,6 @@ final_data = final_data.rename({"column": "Time",
 final_data = final_data.drop_nulls()
 final_data = final_data.with_columns(
     V4=((pl.col("HU") + pl.col("SK") + pl.col("PL")) / 3))
+
 final_data = final_data.drop(["HU", "PL", "SK"])
+final_data.write_excel(fr"{parent_folder}/data/{folder_name}/output/{folder_name}_UnemploymentEurostat.xlsx", worksheet = "Unemployment")

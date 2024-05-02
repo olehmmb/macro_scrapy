@@ -15,8 +15,7 @@ time_column = quarterly_data(year_diff)
 def capacity(series: pl.Series) -> pl.Series:
     capacities = series.to_list()
     capacities_qy = average_every_4(capacities)
-    capacities_qy_final = capacities_qy + [0] * (len(time_column) - len(capacities_qy))
-    return capacities_qy_final
+    return capacities_qy + [0] * (len(time_column) - len(capacities_qy))
 
 capacities_qy_final = capacity(capacity_df)
 
