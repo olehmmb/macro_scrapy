@@ -6,16 +6,18 @@ from __init__ import input_path, output_path
 class EmployeePotential:
     """A class to handle the processing of employee potential data."""
 
-    def __init__(self, input_path_value: str, output_path_value: str) -> None:
+    def __init__(self, input_file: str, output_file: str) -> None:
         """
         Initialize the EmployeePotential class with input and output paths.
 
         Parameters:
-            input_path_value: The path to the input folder and prefix.
-            output_path_value:  The path to the output folder and prefix.
+            input_file: The path to the input folder and prefix.
+            output_file:  The path to the output folder and prefix.
         """
-        self.input_path = input_path_value
-        self.output_path = output_path_value
+        self.input_file_path = '{0}_Sentiment.xlsx'.format(input_file)
+        self.output_file_path = ('{0}_EmploymentPotential.xlsx'.format(
+            output_file,
+            ))
 
     def read_data(self) -> pl.DataFrame:
         """
@@ -26,7 +28,7 @@ class EmployeePotential:
             Excel file.
         """
         return pl.read_excel(
-            '{0}_Sentiment.xlsx'.format(self.input_path),
+            self.input_file_path,
             sheet_name='Data',
             read_options={'skip_rows': 1, 'columns': [0, 1, 3]},
         )
@@ -52,10 +54,7 @@ class EmployeePotential:
             processed_data (pl.DataFrame): A Polars DataFrame with
                 the processed data to be written to the Excel file.
         """
-        processed_data.write_excel(
-            '{0}_EmploymentPotential.xlsx'.format(self.output_path),
-            worksheet='EmploymentPotential',
-        )
+        processed_data.write_excel(self.output_file_path)
 
 
 if __name__ == '__main__':
