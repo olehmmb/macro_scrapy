@@ -1,9 +1,0 @@
-name: macro_scrapy
-channels:
-  - conda-forge
-dependencies:
-  - scrapy
-  - pip
-  - ruff
-  - mypy
-prefix: /opt/conda/envs/macro_scrapy
