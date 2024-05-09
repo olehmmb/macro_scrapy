@@ -12,14 +12,14 @@ from . import folder_name
 
 class TableSpider(scrapy.Spider):
     name = "tables_spider"
-    dont_retrieve_year = ("CNB_CZK_EUR", "czso_inflace")
+    dont_retrieve_year = ("CNB_EUR_CZK", "czso_inflace")
     def start_requests(self) -> Generator[Any, Any, Any]:
         urls = {
             "MFCR_state_deficit" : {"url" : "https://www.mfcr.cz/cs/rozpoctova-politika/statni-rozpocet/plneni-statniho-rozpoctu",
                                         "xpath" : ["(//a[contains(@href, 'mesicni-pokladni-plneni')])[1]/@href",
                                                    "(//a[contains(@href, 'mesicni-pokladni-plneni') and count(@*) = 1])[position()  <= 7]/@href"],
                                         "xpath_table": ["(//tbody)[1]/tr"]},
-            "CNB_CZK_EUR" : {"url" : "https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/prumerne_mena.html?mena=EUR",
+            "CNB_EUR_CZK" : {"url" : "https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/prumerne_mena.html?mena=EUR",
                                         "xpath": [],
                                         "xpath_table" : ["(//table)[1]/tr"]},
         }
