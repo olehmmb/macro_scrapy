@@ -1,9 +1,2 @@
-[tool.ruff]
-exclude = ["middlewares.py","pipelines.py","settings.py"]
-lint.select = ["ALL","D"]
-lint.ignore = ["COM812","D100","D101","D102","D103","D211","ISC001","ANN101", "E501"]
-fix = false
-[tool.ruff.lint.pydocstyle]
-convention = "numpy"
 [tool.mypy]
 ignore_missing_imports=true
