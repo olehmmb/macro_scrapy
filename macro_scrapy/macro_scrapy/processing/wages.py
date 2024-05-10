@@ -1,20 +1,45 @@
+"""Output for Wages calculation."""
 import polars as pl
-from __init__ import folder_name, parent_folder
+from __init__ import ExcelHandler, input_path, output_path
 
-wage_df = pl.read_excel(fr"{parent_folder}\data\{folder_name}\input\{folder_name}_GrossWage.xlsx", sheet_name="Data")
 
-def wages_transformation(df: pl.DataFrame) -> pl.DataFrame:
-    initial_df = pl.DataFrame(df)
-    df_trimmed = initial_df.slice(0, -3)
-    df_trimmed = df_trimmed.transpose()
+class Wages:
+    """A class to handle the processing of Capacity data."""
 
-    df_trimmed = df_trimmed.select(("Q"+(pl.col("column_0").str.extract(r"^(.).*"))).alias("Quartal"), (pl.col("column_1")).alias("Average Wage"))
-    df_final = df_trimmed[1:,:]
+    def __init__(self) -> None:
+        """Initialize the EmployeePotential class."""
+        self.input_file = '{0}GrossWage.xlsx'.format(input_path)
+        self.output_file = '{0}Wages.xlsx'.format(output_path)
+        self.excel_handler = ExcelHandler()
 
-    num_years = len(df_final) // 4
-    years = pl.Series([year for year in range(2001, 2001 + num_years) for i in range(4)])
-    df_final = df_final.with_columns(Year=years)
+    def process_data(self) -> 'Wages':
+        """Process the data.
 
-    df_final.write_excel(fr"{parent_folder}\data\{folder_name}\output\{folder_name}_AverageWage.xlsx", worksheet = "AverageWage")
+        Drop the blank columns, transpose, set column names and forward fill 'Year' values.
 
-wages_transformation(wage_df)
+        Returns:
+            Capacity: An instance of the Capacity class.
+        """
+        self.excel_handler.df = self.excel_handler.df.select(pl.exclude('column_1', 'column_2'))     
+        self.excel_handler.df = self.excel_handler.df.head(3)
+        self.excel_handler.df = self.excel_handler.df.transpose(
+            column_names=[
+            'Year', 'Quartal', 'Average Wage',
+            ]
+        )
+
+        self.excel_handler.df.with_columns(pl.col('Year').forward_fill())
+
+    def run_it_all(self):
+        """Execute all the steps to process the unemployment data."""
+        self.excel_handler.read_data(
+            excel_stream=self.input_file,
+            sheet_name='Data',
+            has_header=False,
+            )
+        self.process_data()
+        self.excel_handler.write_data(output_file=self.output_file)
+
+
+if __name__ == '__main__':
+    Wages().run_it_all()
