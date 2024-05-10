@@ -3,11 +3,16 @@
 This package provides resources for processing.
 It introduces variables that are subsequently used.
 """
+import contextlib
+import zipfile
 from datetime import datetime as dt
 from datetime import timezone
+from pathlib import Path
 
 import re
 import polars as pl
+import xlrd
+from openpyxl import Workbook
 from xls2xlsx import XLS2XLSX
 from zipfile import ZipFile
 
@@ -121,7 +126,7 @@ def list_growth(sequence: any) -> list:
 
 
 class ExcelHandler:
-    """A class to handle Excel files within a zip."""
+    """A class to handle Excel files"""
 
     def __init__(self):
         """Initialize ExcelHandler with necessary attributes."""
