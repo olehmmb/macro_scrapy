@@ -4,6 +4,10 @@ channels:
 dependencies:
   - scrapy
   - pip
-  - ruff
-  - mypy
+  - polars
+  - xlsx2csv
+  - xlsxwriter
+  - pip:
+      - xls2xlsx
+      - wemake-python-styleguide
 prefix: /opt/conda/envs/macro_scrapy
