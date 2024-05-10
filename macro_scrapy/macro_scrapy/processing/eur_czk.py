@@ -3,39 +3,39 @@ import datetime
 
 import polars as pl
 import polars.selectors as cs
-from __init__ import CsvHandler, input_path, output_path
+from __init__ import ExcelHandler, input_path, output_path
 from dateutil.relativedelta import relativedelta
 
 
 class EurCzkData:
-    """A class to process EUR/CZK exchange rates from a .csv file."""
+    """A class to process EUR/CZK exchange rates from a .excel file."""
 
     def __init__(self):
         """Initialize EurCzkData with necessary attributes."""
         self.input_file = '{0}CNB_EUR_CZK.csv'.format(input_path)
         self.output_file = '{0}Eur_Czk.xlsx'.format(output_path)
-        self.csv_handler = CsvHandler()
+        self.excel_handler = ExcelHandler()
 
     def replace_comma_with_a_dot(self) -> 'EurCzkData':
-        """
-        Replace decimal comma with decimal dot for all columns excluding "rok" column.
+        """ 
+        Replace decimal comma with decimal dot for all columns excluding
+        "rok" column.
 
-        Returns
-        -------
+        :returns
             EurCzkData: An instance of the EurCzkData class.
         """
-        self.csv_handler.df = (self.csv_handler.df
-                        .with_columns(pl.all().exclude("rok")
-                        .str.replace(",", ".")
-                        .cast(pl.Float32, strict=False)
-                        .round(3))
+        self.excel_handler.df = (self.excel_handler.df
+                                    .with_columns(pl.all().exclude("rok")
+                                    .str.replace(",", ".")
+                                    .cast(pl.Float32, strict=False)
+                                    .round(3))
         )
         return self
     def rename_columns(self) -> 'EurCzkData':
         """
         Rename columns using integers from 00 to 12 indicating the corresponding month.
 
-        Note that columns are arranged in an ascending order from left to right (January, February ...) in the .csv file.
+        Note that columns are arranged in an ascending order from left to right (January, February ...) in the .excel file.
 
         This transformation is needed in order to create "date" column of Datetime data type.
 
@@ -43,7 +43,7 @@ class EurCzkData:
         -------
             EurCzkData: An instance of the EurCzkData class.
         """
-        self.csv_handler.df.columns = ["year"] + [str(i).zfill(2) for i in range(1, 13)]
+        self.excel_handler.df.columns = ["year"] + [str(i).zfill(2) for i in range(1, 13)]
 
         return self
 
@@ -57,8 +57,8 @@ class EurCzkData:
         -------
             EurCzkData: An instance of the EurCzkData class.
         """
-        self.csv_handler.df = self.csv_handler.df.melt(id_vars="year", value_vars = cs.by_dtype([pl.Float32]))
-        self.csv_handler.df = ((self.csv_handler.df.with_columns(
+        self.excel_handler.df = self.excel_handler.df.melt(id_vars="year", value_vars = cs.by_dtype([pl.Float32]))
+        self.excel_handler.df = ((self.excel_handler.df.with_columns(
                 pl.concat_str([pl.col("year"), pl.col("variable")], separator="-")
                 .map_elements(lambda x: (datetime.datetime.strptime(x, "%Y-%m") + relativedelta(months=1, days=-1)).replace(tzinfo=datetime.timezone.utc)).alias("date"))  # noqa: DTZ007
                 )
@@ -74,7 +74,7 @@ class EurCzkData:
         -------
             EurCzkData: An instance of the EurCzkData class.
         """
-        self.csv_handler.df = (self.csv_handler.df.sort(pl.col("date"), descending=False)
+        self.excel_handler.df = (self.excel_handler.df.sort(pl.col("date"), descending=False)
             .rename({"value": "eur_czk"})
             .select("date", "year", "eur_czk")
         )
@@ -92,18 +92,18 @@ class EurCzkData:
         Temporally sorts the final dataframe.
         Writes the DataFrame to an Excel file.
         """
-        self.csv_handler.read_data(
+        self.excel_handler.read_data_csv(
             source=self.input_file,
             has_header=True,
             encoding='utf8-lossy',
-            missing_utf8_is_empty_string=True
+            missing_utf8_is_empty_string=True,
             )
         (self.replace_comma_with_a_dot()
             .rename_columns()
             .melt_dataframe_into_long_format()
             .sort_and_rename()
         )
-        self.csv_handler.write_data(output_file=self.output_file)
+        self.excel_handler.write_data(output_file=self.output_file)
 
 if __name__ == '__main__':
     EurCzkData().run_it_all()

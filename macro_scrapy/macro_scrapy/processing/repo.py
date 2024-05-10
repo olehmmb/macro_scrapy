@@ -14,7 +14,7 @@ class RepoData:
 
     def process_data(self) -> 'RepoData':
         """
-        Process data by removing redundant rows and columns. Then sort by "date" column.
+        Process data by removing redundant rows and columns. Then rename columns and sort the dataframe by "date" column.
 
         Returns
         -------
@@ -23,8 +23,10 @@ class RepoData:
         self.excel_handler.df = (self.excel_handler.df.slice(3,len(self.excel_handler.df))
             .select(self.excel_handler.df.columns[0:2])
             .slice(1, len(self.excel_handler.df))
-            .sort("date", descending=False)
         )
+        self.excel_handler.df.columns = ["date", "2W_repo_rate"]
+        self.excel_handler.df = self.excel_handler.df.sort("date", descending=False)
+
         return self
     def recast_columns(self) -> 'RepoData':
         """
@@ -81,7 +83,7 @@ class RepoData:
         """
         self.excel_handler.read_data(
             excel_stream=self.input_file,
-            has_header=False, new_columns= ["date", "2W_repo_rate"]
+            has_header=False, # new_columns= ["date", "2W_repo_rate"]
             )
         (self.process_data()
             .recast_columns()

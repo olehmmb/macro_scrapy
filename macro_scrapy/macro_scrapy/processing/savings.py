@@ -1,22 +1,43 @@
+"""Output for Savings calculation."""
 import polars as pl
-from __init__ import average_every_4, folder_name, parent_folder, quarterly_data
+from __init__ import ExcelHandler, input_path, output_path
 
 
-def trimming_df(df: pl.DataFrame) -> list:
-    df_trimmed = [float(i) if i is not None and i != "null" else None for i in df[7:,4]]
-    df_trimmed = [i if i is not None else 0 for i in df_trimmed]
-    num_years = (len(df_trimmed) // 4) + (len(df_trimmed) % 4 > 0)
-    time = quarterly_data(num_years)
-    return df_trimmed, time
+class Savings:
+    """A class to handle the processing of Savings data."""
 
-def savings_dataframe(df_trimmed: list, time: list) -> pl.DataFrame:
-    final_values = average_every_4(df_trimmed)
-    temp_df = {"Time": time,
-        "Saving Rate": final_values}
-    temp_df["Saving Rate"] += [0] * (len(time) - len(final_values))
-    final_df = pl.DataFrame(temp_df)
-    final_df.write_excel(fr"{parent_folder}\data\{folder_name}\output\{folder_name}_Savings.xlsx", worksheet = "SavingRate")
+    def __init__(self) -> None:
+        """Initialize the Savings class."""
+        self.input_file = '{0}Savings.xlsx'.format(input_path)
+        self.output_file = '{0}SavingRate.xlsx'.format(output_path)
+        self.excel_handler = ExcelHandler()
 
-savings_df = pl.read_excel(fr"{parent_folder}\data\{folder_name}\input\{folder_name}_Savings.xlsx")
-df_output, time_output = trimming_df(savings_df)
-savings_dataframe(df_output, time_output)
+    def process_data(self) -> 'Savings':
+        """Process the data.
+
+        Set column names and forward fill 'Year' values.
+
+        Returns:
+            Capacity: An instance of the Capacity class.
+        """
+        self.excel_handler.df.columns = [
+            'Year', 'Quartal', 'SavingRate',
+            ]
+        self.excel_handler.df.with_columns(pl.col('Year').forward_fill())
+        return self
+
+    def run_it_all(self):
+        """Execute all the steps to process the savings data."""
+        self.excel_handler.read_data(
+            excel_stream=self.input_file,
+            skip_rows=7,
+            sheet_name='List1',
+            has_header=False,
+            columns=[1, 2, 5],
+            )
+        self.process_data()
+        self.excel_handler.write_data(output_file=self.output_file)
+
+
+if __name__ == '__main__':
+    Savings().run_it_all()

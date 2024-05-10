@@ -1,24 +1,43 @@
+"""Output for Capacity calculation."""
 import polars as pl
-from __init__ import (
-    average_every_4,
-    current_year,
-    folder_name,
-    parent_folder,
-    quarterly_data,
-)
+from __init__ import ExcelHandler, input_path, output_path
 
-file_name = "Capacity"
-capacity_df = (pl.read_excel(fr"{parent_folder}\data\{folder_name}\input\{folder_name}_{file_name}.xlsx", sheet_name="Data"))[99:,2]
-year_diff = current_year - 2018
-time_column = quarterly_data(year_diff)
 
-def capacity(series: pl.Series) -> pl.Series:
-    capacities = series.to_list()
-    capacities_qy = average_every_4(capacities)
-    capacities_qy_final = capacities_qy + [0] * (len(time_column) - len(capacities_qy))
-    return capacities_qy_final
+class Capacity:
+    """A class to handle the processing of Capacity data."""
 
-capacities_qy_final = capacity(capacity_df)
+    def __init__(self) -> None:
+        """Initialize the EmployeePotential class."""
+        self.input_file = '{0}Capacity.xlsx'.format(input_path)
+        self.output_file = '{0}CapacityUtilization.xlsx'.format(output_path)
+        self.excel_handler = ExcelHandler()
 
-final_df = pl.DataFrame({"Time": time_column, "Capacity Utilization": capacities_qy_final})
-final_df.write_excel(fr"{parent_folder}\data\{folder_name}\output\{folder_name}_Capacity.xlsx", worksheet = "Capacity")
+    def process_data(self) -> 'Capacity':
+        """Process the data.
+
+        Set column names and forward fill 'Year' values.
+
+        Returns:
+            Capacity: An instance of the Capacity class.
+        """
+        self.excel_handler.df.columns = [
+            'Year', 'Quartal', 'Capacity',
+            ]
+        self.excel_handler.df.with_columns(pl.col('Year').forward_fill())
+        return self
+
+    def run_it_all(self):
+        """Execute all the steps to process the unemployment data."""
+        self.excel_handler.read_data(
+            excel_stream=self.input_file,
+            sheet_name='Data',
+            skip_rows=31,
+            has_header=True,
+            columns=[0, 1, 2],
+            )
+        self.process_data()
+        self.excel_handler.write_data(output_file=self.output_file)
+
+
+if __name__ == '__main__':
+    Capacity().run_it_all()

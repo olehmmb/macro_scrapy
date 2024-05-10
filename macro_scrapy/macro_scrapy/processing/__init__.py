@@ -3,12 +3,15 @@
 This package provides resources for processing.
 It introduces variables that are subsequently used.
 """
-import re
+import contextlib
+import zipfile
 from datetime import datetime as dt
 from datetime import timezone
-from zipfile import ZipFile
+from pathlib import Path
 
 import polars as pl
+import xlrd
+from openpyxl import Workbook
 from xls2xlsx import XLS2XLSX
 
 parent_folder = r'/workspaces/macro_scrapy'
@@ -121,7 +124,7 @@ def list_growth(sequence: any) -> list:
 
 
 class ExcelHandler:
-    """A class to handle Excel files within a zip."""
+    """A class to handle Excel files"""
 
     def __init__(self):
         """Initialize ExcelHandler with necessary attributes."""
