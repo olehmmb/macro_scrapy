@@ -1,45 +1,44 @@
-"""Output for Wages calculation."""
+"""Output for Capacity calculation."""
 import polars as pl
 from __init__ import ExcelHandler, input_path, output_path
 
 
-class Wages:
+class Capacity:
     """A class to handle the processing of Capacity data."""
 
     def __init__(self) -> None:
+        self.input_files = 
         """Initialize the EmployeePotential class."""
-        self.input_file = '{0}GrossWage.xlsx'.format(input_path)
-        self.output_file = '{0}Wages.xlsx'.format(output_path)
+        self.input_file = '{0}Capacity.xlsx'.format(input_path)
+        self.output_file = '{0}CapacityUtilization.xlsx'.format(output_path)
         self.excel_handler = ExcelHandler()
 
-    def process_data(self) -> 'Wages':
+    def process_data(self) -> 'Capacity':
         """Process the data.
 
-        Drop the blank columns, transpose, set column names and forward fill 'Year' values.
+        Set column names and forward fill 'Year' values.
 
         Returns:
-            Wages: An instance of the Wages class.
+            Capacity: An instance of the Capacity class.
         """
-        self.excel_handler.df = self.excel_handler.df.select(pl.exclude('column_1', 'column_2'))     
-        self.excel_handler.df = self.excel_handler.df.head(3)
-        self.excel_handler.df = self.excel_handler.df.transpose(
-            column_names=[
-            'Year', 'Quartal', 'Average Wage',
+        self.excel_handler.df.columns = [
+            'Year', 'Quartal', 'Capacity',
             ]
-        )
-
         self.excel_handler.df.with_columns(pl.col('Year').forward_fill())
+        return self
 
     def run_it_all(self):
         """Execute all the steps to process the unemployment data."""
         self.excel_handler.read_data(
             excel_stream=self.input_file,
             sheet_name='Data',
-            has_header=False,
+            skip_rows=31,
+            has_header=True,
+            columns=[0, 1, 2],
             )
         self.process_data()
         self.excel_handler.write_data(output_file=self.output_file)
 
 
 if __name__ == '__main__':
-    Wages().run_it_all()
+    Capacity().run_it_all()
