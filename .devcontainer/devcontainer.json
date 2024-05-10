@@ -18,7 +18,6 @@
                 "ms-python.flake8",
                 "eamodio.gitlens"
                 // "ms-vscode-remote.remote-containers"
-                // some comment to see whether pushing to my local repository is working as intended
 
             ]
         }
