@@ -126,7 +126,7 @@ def list_growth(sequence: any) -> list:
 
 
 class ExcelHandler:
-    """A class to handle Excel files within a zip."""
+    """A class to handle Excel files"""
 
     def __init__(self):
         """Initialize ExcelHandler with necessary attributes."""

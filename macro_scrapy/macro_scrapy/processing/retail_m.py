@@ -7,6 +7,7 @@ class Capacity:
     """A class to handle the processing of Capacity data."""
 
     def __init__(self) -> None:
+        self.input_files = 
         """Initialize the EmployeePotential class."""
         self.input_file = '{0}Capacity.xlsx'.format(input_path)
         self.output_file = '{0}CapacityUtilization.xlsx'.format(output_path)
