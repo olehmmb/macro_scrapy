@@ -138,6 +138,7 @@ class GDPSpider(scrapy.Spider):
             scrapy.Request(
                 url=target_value[url],
                 callback=self.parse_link,
+                dont_filter=True,
                 cb_kwargs={'name': name, 'xpath': target_value[xpath]},
                 )
             for name, target_value in urls.items()
