@@ -11,28 +11,21 @@ from . import folder_name
 
 
 class TableSpider(scrapy.Spider):
-    name = "tables_spider"
+    name = "inflation_spider"
     dont_retrieve_year = ("CNB_CZK_EUR", "czso_inflace")
     def start_requests(self) -> Generator[Any, Any, Any]:
         urls = {
-            # "MFCR_state_deficit" : {"url" : "https://www.mfcr.cz/cs/rozpoctova-politika/statni-rozpocet/plneni-statniho-rozpoctu",
-            #                             "xpath" : ["(//a[contains(@href, 'mesicni-pokladni-plneni')])[1]/@href",
-            #                                        "(//a[contains(@href, 'mesicni-pokladni-plneni') and count(@*) = 1])[position()  <= 7]/@href"],
-            #                             "xpath_table": ["(//tbody)[1]/tr"]},
-            # "CNB_CZK_EUR" : {"url" : "https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/prumerne_mena.html?mena=EUR",
-            #                             "xpath": [],
-            #                             "xpath_table" : ["(//table)[1]/tr"]},
             "czso_inflace" : {"url" : "https://www.czso.cz/csu/czso/mira_inflace",
                                         "xpath": [],
                                         "xpath_table" : ["(//table)[2]//tbody/tr[position() > last() - 6]"]}
         }
- 
+
         for name, value in urls.items():
                 if value["xpath"]:
                     yield scrapy.Request(url=value["url"], callback=self.parse_xpath, dont_filter=True, cb_kwargs = {"name": name, "xpath": value["xpath"], "xpath_table": value["xpath_table"][0]})
                 else:
                     yield scrapy.Request(url=value["url"], callback=self.parse_table, cb_kwargs={"name": name, "xpath_table": value["xpath_table"][0]})
- 
+
     def parse_xpath(self, response: scrapy.http.response.Response, name: str, xpath: Generator | list[str], xpath_table: str) -> Generator[Any, Any, Any]:
             curr_xpath = xpath[0]
             xpath = xpath[1:]
@@ -42,8 +35,8 @@ class TableSpider(scrapy.Spider):
                       yield scrapy.Request(url=response.urljoin(new_link), dont_filter=True, callback=self.parse_xpath, cb_kwargs={"name": name, "xpath": xpath, "xpath_table": xpath_table})
                  else:
                       yield scrapy.Request(url=response.urljoin(new_link), callback=self.parse_table, cb_kwargs={"name": name, "xpath_table": xpath_table})
- 
- 
+
+
     def parse_table(self, response: scrapy.http.response.Response, name: str, xpath_table: str) -> None:
         all_current_rows = [row.xpath("./*//text()").getall() for row in response.xpath(xpath_table)]
         all_current_rows = [[item for item in inner_list if item != "\xa0"] for inner_list in all_current_rows]
@@ -54,4 +47,3 @@ class TableSpider(scrapy.Spider):
         with Path(csv_path).open(mode="w", newline="") as file:
             writer = csv.writer(file)
             writer.writerows(all_current_rows)
-        # return None  # noqa: RET501, PLR1711
