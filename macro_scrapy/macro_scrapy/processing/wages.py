@@ -18,7 +18,7 @@ class Wages:
         Drop the blank columns, transpose, set column names and forward fill 'Year' values.
 
         Returns:
-            Capacity: An instance of the Capacity class.
+            Wages: An instance of the Wages class.
         """
         self.excel_handler.df = self.excel_handler.df.select(pl.exclude('column_1', 'column_2'))     
         self.excel_handler.df = self.excel_handler.df.head(3)

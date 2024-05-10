@@ -72,8 +72,12 @@ class GDPSpider(scrapy.Spider):
                 url: 'https://stats.oecd.org/SDMX-JSON/data/NAAG/.DBTS14_S15NDI/OECD?contentType=csv',
                 xpath: [],
                 },
-            'Households_DisposableIncome.csv': {
-                url: 'https://stats.oecd.org/SDMX-JSON/data/DP_LIVE/CZE.HHDI.GROSS.PC_CHGPPCAP.Q/OECD?contentType=csv',
+            "Households_DisposableIncome_Q.csv": {
+                url:"https://stats.oecd.org/SDMX-JSON/data/DP_LIVE/CZE.HHDI.GROSS.PC_CHGPPCAP.Q/OECD?contentType=csv",
+                xpath: [],
+                },
+            "Households_DisposableIncome_Y.csv": {
+                url:"https://stats.oecd.org/SDMX-JSON/data/DP_LIVE/CZE.HHDI.GROSS.PC_CHGPPCAP.A/OECD?contentType=csv",
                 xpath: [],
                 },
             'IndustrialEvolution_M.xlsx': {
@@ -118,6 +122,10 @@ class GDPSpider(scrapy.Spider):
                 },
             'Savings.xlsx': {
                 url: 'https://www.czso.cz/documents/11350/191095591/csu010524_1.xlsx/a0a3e0bc-794f-4d20-b085-5d95d3505dba?version=1.0',
+                xpath: [],
+                },
+            'Capacity.xlsx': {
+                url: 'https://www.czso.cz/documents/11350/218351664/gkpr012424_4.xlsx/d2605378-9cc1-4cc9-b701-7e766cf29ebb?version=1.0',
                 xpath: [],
                 },
             'Sentiment.xlsx': {
