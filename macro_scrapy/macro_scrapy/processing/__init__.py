@@ -24,7 +24,7 @@ quarter_months = [0, 3, 6, 9]
 months = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
           'August', 'September', 'October', 'November', 'December']
 date_list = []
-
+number_of_months = 12
 
 def monthly_data(years: int) -> list:
     for i in range(years, -1, -1):
@@ -192,25 +192,11 @@ class ExcelHandler:
                           },
         )
         return self
-
-    def write_data(self, output_file: str) -> 'ExcelHandler':
-        """
-        Write DataFrame to Excel file.
-
-        Returns
-        -------
-            ExcelHandler: An instance of the ExcelHandler class.
-        """
-        self.df.write_excel(output_file)
-        return self
-
-class CsvHandler:
-    """A class to handle Csv files."""
-
-    def read_data(self, source, skip_rows=0,  # noqa: PLR0913
+    
+    def read_data_csv(self, source, skip_rows=0,
                     has_header=False, separator=',',
                     encoding='utf8', missing_utf8_is_empty_string=False
-                  ) -> 'CsvHandler':
+                  ) -> 'ExcelHandler':
         """
         Read an Csv file into a DataFrame.
 
@@ -235,13 +221,13 @@ class CsvHandler:
         ).collect()
         return self
 
-    def write_data(self, output_file: str) -> 'CsvHandler':
+    def write_data(self, output_file: str) -> 'ExcelHandler':
         """
         Write DataFrame to Excel file.
 
         Returns
         -------
-            ExcelHandler: An instance of the CsvHandler class.
+            ExcelHandler: An instance of the ExcelHandler class.
         """
         self.df.write_excel(output_file)
         return self
