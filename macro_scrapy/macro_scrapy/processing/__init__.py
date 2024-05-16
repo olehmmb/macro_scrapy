@@ -9,10 +9,12 @@ from datetime import datetime as dt
 from datetime import timezone
 from pathlib import Path
 
+import re
 import polars as pl
 import xlrd
 from openpyxl import Workbook
 from xls2xlsx import XLS2XLSX
+from zipfile import ZipFile
 
 parent_folder = r'/workspaces/macro_scrapy'
 current_date = dt.now(tz=timezone.utc)
@@ -137,10 +139,9 @@ class ExcelHandler:
 
         Args:
             input_file (str): The input zip file.
-            # file_regex (str): The regular expression to match the Excel file.
+            file_regex (str): The regular expression to match the Excel file.
 
-        Returns
-        -------
+        Returns:
             ExcelHandler: An instance of the ExcelHandler with the found Excel.
         """
         self.input_file = input_file
@@ -156,8 +157,7 @@ class ExcelHandler:
         """
         Extract specified file from zip archive.
 
-        Returns
-        -------
+        Returns:
             ExcelHandler: An instance of the ExcelHandler class.
         """
         with ZipFile(self.input_file, 'r') as zip:
@@ -165,7 +165,7 @@ class ExcelHandler:
         return self
 
     def read_data(self, excel_stream=None, sheet_name='Sheet1', skip_rows=0,
-                  has_header=True, columns=None, new_columns=None
+                  has_header=True, columns=None,
                   ) -> 'ExcelHandler':
         """
         Read an Excel file into a DataFrame.
@@ -176,10 +176,8 @@ class ExcelHandler:
             skip_rows (int, optional): The number of rows to skip at the beginning. Defaults to 0.
             has_header (bool, optional): Whether the Excel file has a header. Defaults to True.
             columns (list, optional): The list of column names to consider. If not provided, all columns are considered.
-            new_columns (list, optional): The list of renamed (new) columns to be assigned instead of the original ones.
 
-        Returns
-        -------
+        Returns:
             ExcelHandler: An instance of the ExcelHandler class with the DataFrame read from the Excel file.
         """
         if excel_stream is None:
@@ -188,7 +186,7 @@ class ExcelHandler:
             excel_stream,
             sheet_name=sheet_name,
             read_options={'skip_rows': skip_rows, 'has_header': has_header,
-                          'columns': columns, 'new_columns': new_columns
+                          'columns': columns,
                           },
         )
         return self
@@ -225,8 +223,7 @@ class ExcelHandler:
         """
         Write DataFrame to Excel file.
 
-        Returns
-        -------
+        Returns:
             ExcelHandler: An instance of the ExcelHandler class.
         """
         self.df.write_excel(output_file)
