@@ -26,7 +26,7 @@ quarter_months = [0, 3, 6, 9]
 months = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
           'August', 'September', 'October', 'November', 'December']
 date_list = []
-
+number_of_months = 12
 
 def monthly_data(years: int) -> list:
     for i in range(years, -1, -1):
@@ -189,6 +189,34 @@ class ExcelHandler:
                           'columns': columns,
                           },
         )
+        return self
+    
+    def read_data_csv(self, source, skip_rows=0,
+                    has_header=False, separator=',',
+                    encoding='utf8', missing_utf8_is_empty_string=False
+                  ) -> 'ExcelHandler':
+        """
+        Read an Csv file into a DataFrame.
+
+        Args:
+            source (str, optional): The input .csv file.
+            skip_rows (int, optional): The number of rows to skip at the beginning. Defaults to 0.
+            has_header (bool, optional): Whether the .csv file has a header. Defaults to True.
+            encoding (str, optional): encoding of the .csv file. Defaults to 'utf8'
+            missing_utf8_is_empty_string (bool, optional): whether to treat missing utf8 values as empty strings. Defaults to False.
+
+        Returns
+        -------
+            CsvHandler: An instance of the CsvHandler class with the DataFrame read from the .csv file.
+        """
+        if source is None:
+            source = self.source
+        self.df = pl.scan_csv(
+            source, has_header=has_header,
+            separator=separator, encoding=encoding,
+            missing_utf8_is_empty_string=missing_utf8_is_empty_string,
+            skip_rows=skip_rows
+        ).collect()
         return self
 
     def write_data(self, output_file: str) -> 'ExcelHandler':
