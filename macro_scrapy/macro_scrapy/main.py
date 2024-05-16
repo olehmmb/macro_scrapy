@@ -27,6 +27,7 @@ def run_spiders() -> None:
     process.crawl('mfcr_spider')
     process.crawl('files_spider')
     process.crawl('tables_spider')
+    process.crawl('gov_debt')
     # Start crawling
     process.start()
 
