@@ -1,10 +1,9 @@
 """Main module for processing 2W CNB repo data."""
 import datetime
-
 import polars as pl
-import polars.selectors as cs
-from __init__ import ExcelHandler, input_path, output_path
-from dateutil.relativedelta import relativedelta
+from polars import selectors as cs
+from __init__ import ExcelHandler, input_path, output_path, number_of_months
+from dateutil import relativedelta
 
 
 class EurCzkData:
@@ -17,71 +16,97 @@ class EurCzkData:
         self.excel_handler = ExcelHandler()
 
     def replace_comma_with_a_dot(self) -> 'EurCzkData':
-        """ 
-        Replace decimal comma with decimal dot for all columns excluding
-        "rok" column.
+        """
+        Replace decimal comma with decimal dot for "rok" column.
 
-        :returns
+        Returns:
             EurCzkData: An instance of the EurCzkData class.
         """
-        self.excel_handler.df = (self.excel_handler.df
-                                    .with_columns(pl.all().exclude("rok")
-                                    .str.replace(",", ".")
-                                    .cast(pl.Float32, strict=False)
-                                    .round(3))
+        self.excel_handler.df = (
+            self.excel_handler.df.with_columns(
+                pl.all().exclude(
+                    'rok',
+                    ).str.replace(',', '.').cast(
+                        pl.Float32, strict=False,
+                ).round(3),
+            )
         )
         return self
+
     def rename_columns(self) -> 'EurCzkData':
         """
-        Rename columns using integers from 00 to 12 indicating the corresponding month.
+        Rename columns.
 
-        Note that columns are arranged in an ascending order from left to right (January, February ...) in the .excel file.
+        Rename columns using integers from 00 to 12 indicating the
+        corresponding month.
 
-        This transformation is needed in order to create "date" column of Datetime data type.
+        Note that columns are arranged in an ascending order from left to
+        right (January, February ...) in the .excel file.
 
-        Returns
-        -------
+        This transformation is needed in order to create "date" column of
+        Datetime data type.
+
+        Returns:
             EurCzkData: An instance of the EurCzkData class.
         """
-        self.excel_handler.df.columns = ["year"] + [str(i).zfill(2) for i in range(1, 13)]
+        month_numbers = [str(integer).zfill(2) for integer in range(
+            1, number_of_months + 1,
+        )]
+        self.excel_handler.df.columns = (['year'] + month_numbers)
 
         return self
 
     def melt_dataframe_into_long_format(self) -> 'EurCzkData':
         """
-        Melt the dataframe into a long format. Concatenate "year" and newly created "variable" columns into "date" column and recast it from String to Datetime data type.
+        Melt the dataframe into a long format.
 
-        Remove the newly created column "variable" indicating the original column names (00 -- 12).
+        Melt the dataframe into a long format. Concatenate "year" and newly
+        created "variable" columns into "date" column and recast it from
+        String to Datetime data type.
 
-        Returns.
-        -------
+        Remove the newly created column "variable" indicating the original
+        column names (00 -- 12).
+
+        Returns:
             EurCzkData: An instance of the EurCzkData class.
         """
-        self.excel_handler.df = self.excel_handler.df.melt(id_vars="year", value_vars = cs.by_dtype([pl.Float32]))
+        self.excel_handler.df = self.excel_handler.df.melt(
+            id_vars='year', value_vars=cs.by_dtype([pl.Float32]),
+        )
         self.excel_handler.df = ((self.excel_handler.df.with_columns(
-                pl.concat_str([pl.col("year"), pl.col("variable")], separator="-")
-                .map_elements(lambda x: (datetime.datetime.strptime(x, "%Y-%m") + relativedelta(months=1, days=-1)).replace(tzinfo=datetime.timezone.utc)).alias("date"))  # noqa: DTZ007
-                )
-                .drop("variable")
+            pl.concat_str(
+                [pl.col('year'), pl.col('variable')],
+                separator='-',
+            ).map_elements(
+                lambda string:
+                (datetime.datetime.strptime(string, '%Y-%m') + relativedelta.
+                 relativedelta(months=1, days=-1)
+                 ).replace(tzinfo=datetime.timezone.utc),
+            ).alias('date'),
+        )).drop('variable')
         )
         return self
 
     def sort_and_rename(self) -> 'EurCzkData':
         """
-        Sort and rearrange the dataframe and rename "value" column to "eur_czk".
+        Sort and rename.
 
-        Returns
-        -------
+        Sort and rearrange the dataframe; rename "value" column to "eur_czk".
+
+        Returns:
             EurCzkData: An instance of the EurCzkData class.
         """
-        self.excel_handler.df = (self.excel_handler.df.sort(pl.col("date"), descending=False)
-            .rename({"value": "eur_czk"})
-            .select("date", "year", "eur_czk")
+        self.excel_handler.df = (self.excel_handler.df.sort(
+            pl.col('date'),
+            descending=False,
+        ).rename(
+            {'value': 'eur_czk'},
+        ).select('date', 'year', 'eur_czk')
         )
 
         return self
 
-    def run_it_all(self):  # noqa: ANN201
+    def run_it_all(self):
         """
         Execute all the steps to process the CNB_EUR_CZK data.
 
@@ -97,13 +122,14 @@ class EurCzkData:
             has_header=True,
             encoding='utf8-lossy',
             missing_utf8_is_empty_string=True,
-            )
-        (self.replace_comma_with_a_dot()
-            .rename_columns()
-            .melt_dataframe_into_long_format()
-            .sort_and_rename()
+        )
+        (self.replace_comma_with_a_dot(
+        ).rename_columns(
+        ).melt_dataframe_into_long_format(
+        ).sort_and_rename()
         )
         self.excel_handler.write_data(output_file=self.output_file)
+
 
 if __name__ == '__main__':
     EurCzkData().run_it_all()
