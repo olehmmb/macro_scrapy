@@ -4,7 +4,7 @@ from __init__ import ExcelHandler, input_path, output_path
 
 
 class EurCzkData:
-    """A class to process EUR/CZK exchange rates from a .excel file."""
+    """A class to process EUR/CZK exchange rates from a .csv file."""
 
     def __init__(self):
         """Initialize EurCzkData with necessary attributes."""
@@ -16,12 +16,7 @@ class EurCzkData:
         """
         Melt the dataframe into a long format.
 
-        Melt the dataframe into a long format. Concatenate "year" and newly
-        created "variable" columns into "date" column and recast it from
-        String to Datetime data type.
-
-        Remove the newly created column "variable" indicating the original
-        column names (00 -- 12).
+        Melt the dataframe into a long format.
 
         Returns:
             EurCzkData: An instance of the EurCzkData class.
@@ -32,25 +27,6 @@ class EurCzkData:
             variable_name='month',
             value_name='eur_czk',
             )
-        return self
-
-    def sort_and_rename(self) -> 'EurCzkData':
-        """
-        Sort and rename.
-
-        Sort and rearrange the dataframe; rename "value" column to "eur_czk".
-
-        Returns:
-            EurCzkData: An instance of the EurCzkData class.
-        """
-        self.excel_handler.df = (self.excel_handler.df.sort(
-            pl.col('date'),
-            descending=False,
-        ).rename(
-            {'value': 'eur_czk'},
-        ).select('date', 'year', 'eur_czk')
-        )
-
         return self
 
     def run_it_all(self):
