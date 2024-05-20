@@ -24,9 +24,8 @@ class GDPSpider(scrapy.Spider):
                     yield scrapy.Request(url=value["url"], callback=self.parse_link, cb_kwargs={"name": name, "xpath_link": value["xpath_link"]})
 
     def parse_xpath(self, response: scrapy.http.response.Response, name: str, xpath: Generator | list[str], xpath_link: str) -> Generator[Any, Any, Any]:
-            curr_xpath = xpath[0]
-            xpath = xpath[1:]
-            new_links = response.xpath(curr_xpath).getall()
+            curr_xpath = xpath.pop(0) if xpath else None
+            new_links = response.xpath(curr_xpath).getall() if curr_xpath else [response.url]
             for new_link in new_links:
                  if xpath:
                       yield scrapy.Request(url=response.urljoin(new_link), dont_filter=True, callback=self.parse_xpath, cb_kwargs={"name": name, "xpath": xpath, "xpath_link": xpath_link})

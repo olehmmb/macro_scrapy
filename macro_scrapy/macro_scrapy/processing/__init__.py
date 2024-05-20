@@ -212,16 +212,20 @@ class ExcelHandler:
         if source is None:
             source = self.source
         self.df = pl.scan_csv(
-            source, has_header=has_header,
-            separator=separator, encoding=encoding,
+            source,
+            has_header=has_header,
+            separator=separator,
+            encoding=encoding,
             missing_utf8_is_empty_string=missing_utf8_is_empty_string,
             skip_rows=skip_rows, null_values=null_values,
         ).collect()
         return self
 
-    def write_data(self, output_file: str) -> 'ExcelHandler':
-        """
-        Write DataFrame to Excel file.
+    def write_data(self, output_file) -> 'ExcelHandler':
+        """Write DataFrame to Excel file.
+
+        Args:
+            output_file (str, optional): The the name of the output .xlsx file.
 
         Returns:
             ExcelHandler: An instance of the ExcelHandler class.
