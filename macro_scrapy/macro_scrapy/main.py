@@ -1,27 +1,18 @@
 """Module with functions to create folders for data and run Scrapy spiders."""
-from pathlib import Path
 
-from __init__ import folder_name, parent_folder
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
+from settings import INPUT_FOLDER, OUTPUT_FOLDER
 
 
 def create_folder() -> None:
     """Create folders for input/output data."""
-    # Create a folder with current date as a name for scraped data
-    folder_path = '{0}/data/{1}'.format(parent_folder, folder_name)
-    Path(folder_path).mkdir(parents=True, exist_ok=True)
-
-    # Create input / output folders for clearer manipulation with the data
-    subfolder1 = 'input'
-    subfolder2 = 'output'
-    Path(Path(folder_path) / subfolder1).mkdir(parents=True, exist_ok=True)
-    Path(Path(folder_path) / subfolder2).mkdir(parents=True, exist_ok=True)
+    INPUT_FOLDER.mkdir(parents=True, exist_ok=True)
+    OUTPUT_FOLDER.mkdir(parents=True, exist_ok=True)
 
 
 def run_spiders() -> None:
-    """Run multiple Scrapy spiders."""
-    # Create CrawlerProcess and SpiderLoader
+    """Create CrawlerProcess and run multiple Scrapy spiders."""
     process = CrawlerProcess(get_project_settings())
     process.crawl('inflation_spider')
     process.crawl('mfcr_spider')

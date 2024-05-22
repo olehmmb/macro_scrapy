@@ -2,6 +2,14 @@
     "version": "0.1.0",
     "configurations": [
         {
+            "name": "Python Debugger: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "cwd": "${fileDirname}",
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Python: Launch Scrapy Spider",
             "type": "debugpy",
             "request": "launch",

@@ -7,8 +7,6 @@ from typing import Any, Generator
 import scrapy
 from scrapy.utils.project import get_project_settings
 
-from . import folder_name
-
 
 class TableSpider(scrapy.Spider):
     name = "inflation_spider"
@@ -41,9 +39,12 @@ class TableSpider(scrapy.Spider):
         all_current_rows = [row.xpath("./*//text()").getall() for row in response.xpath(xpath_table)]
         all_current_rows = [[item for item in inner_list if item != "\xa0"] for inner_list in all_current_rows]
         year = "_" + all_current_rows[1][-1][-4:] if name not in self.dont_retrieve_year else ""
-        csv_filename =  folder_name + "_" + f"{name}{year}.csv"
-        csv_path = Path(get_project_settings().get("FILES_STORE")) / csv_filename
-        csv_path.parent.mkdir(parents=True, exist_ok=True)
-        with Path(csv_path).open(mode="w", newline="") as file:
+        file_path = '{0}/{1}_{2}.csv'.format(
+            get_project_settings().get('FILES_STORE'),
+            get_project_settings().get('CURRENT_DATE'),
+            name,
+        )
+        #file_path.parent.mkdir(parents=True, exist_ok=True)
+        with Path(file_path).open(mode="w", newline="") as file:
             writer = csv.writer(file)
             writer.writerows(all_current_rows)

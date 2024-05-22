@@ -54,7 +54,8 @@ class ScrapemeSpider(CrawlSpider):
             response (obj): The response object to be processed.
 
         Yields:
-            MacroScrapyItem: An item that contains data from a row in the table.
+            MacroScrapyItem: An item that contains data from a row
+              in the table.
         """
         year = response.url.split('plneni-statniho-rozpoctu/')[1].split(
             '/mesicni-pokladni-plneni',
