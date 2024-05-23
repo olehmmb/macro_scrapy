@@ -21,7 +21,14 @@ class EmployeePotential:
             EmployeePotential: An instance of the EmployeePotential class.
         """
         self.excel_handler.df.columns = [
-            'Year', 'Month', 'Shortage of Employees',
+            'Year',
+            'Month',
+            'No limitations',
+            'Insufficient demand',
+            'Shortage of Employees',
+            'Material / Equipment shortage',
+            'Financial Constraints',
+            'Other limitations',
             ]
         self.excel_handler.df.with_columns(pl.col('Year').forward_fill())
         return self
@@ -33,7 +40,7 @@ class EmployeePotential:
             sheet_name='Data',
             skip_rows=1,
             has_header=True,
-            columns=[0, 1, 3],
+            columns=[0, 1, 2, 3, 4, 5, 6, 7],
             )
         self.process_data()
         self.excel_handler.write_data(output_file=self.output_file)
