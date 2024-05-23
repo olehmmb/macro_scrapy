@@ -14,7 +14,7 @@ class MacroScrapyPipeline(FilesPipeline):
 
     def file_path(
         self, request, item=None, response=None, info=None,  # noqa: WPS110
-            ):
+            ) -> str:
         """Overwrite the file_path method to rename the scraped file.
 
         Args:
