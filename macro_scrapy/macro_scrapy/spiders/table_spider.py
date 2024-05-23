@@ -17,6 +17,11 @@ class TableSpider(scrapy.Spider):
                 xpath: [],
                 'xpath_table': ['(//table)[1]/tr'],
                 },
+            'czso_inflace': {
+                url: 'https://www.czso.cz/csu/czso/mira_inflace',
+                xpath: [],
+                'xpath_table': ['(//table)[2]//tbody/tr[position() > last() - 6]'],
+                },
         }
 
         for name, value in urls.items():
@@ -29,10 +34,10 @@ class TableSpider(scrapy.Spider):
             yield scrapy.Request(url=response.urljoin(new_link), dont_filter=True, callback=self.parse_table if not xpath else self.parse_xpath, cb_kwargs={'name': name, 'xpath': xpath, 'xpath_table': xpath_table})
 
     def parse_table(self, response: scrapy.http.response.Response, name: str, xpath: None, xpath_table: str) -> None:
-        table_xpath = '//table[1]/tr'
+        table_xpath = xpath_table
         file_path = '{0}/{1}_{2}.csv'.format(
             get_project_settings().get('FILES_STORE'),
-            get_project_settings().get('CURRENT_DATE'), 
+            get_project_settings().get('CURRENT_DATE'),
             name,
         )
         with open(file_path, 'w', newline='') as csvfile:
