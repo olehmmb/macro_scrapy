@@ -8,8 +8,12 @@ class Savings:
 
     def __init__(self) -> None:
         """Initialize the Savings class."""
-        self.input_file = '{0}Savings.xlsx'.format(input_path)
-        self.output_file = '{0}SavingRate.xlsx'.format(output_path)
+        self.input_file = '{0}Savings.xlsx'.format(
+            input_path,
+            )
+        self.output_file = '{0}SavingRate.xlsx'.format(
+            output_path,
+            )
         self.excel_handler = ExcelHandler()
 
     def process_data(self) -> 'Savings':
@@ -21,7 +25,7 @@ class Savings:
             Capacity: An instance of the Capacity class.
         """
         self.excel_handler.df.columns = [
-            'Year', 'Quartal', 'SavingRate',
+            'Year', 'Quartal', 'Saving Rate', 'Investment Rate',
             ]
         self.excel_handler.df.with_columns(pl.col('Year').forward_fill())
         return self
@@ -33,7 +37,7 @@ class Savings:
             skip_rows=7,
             sheet_name='List1',
             has_header=False,
-            columns=[1, 2, 5],
+            columns=[1, 2, 5, 6],
             )
         self.process_data()
         self.excel_handler.write_data(output_file=self.output_file)

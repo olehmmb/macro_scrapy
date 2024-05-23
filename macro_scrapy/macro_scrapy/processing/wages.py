@@ -8,27 +8,39 @@ class Wages:
 
     def __init__(self) -> None:
         """Initialize the EmployeePotential class."""
-        self.input_file = '{0}GrossWage.xlsx'.format(input_path)
-        self.output_file = '{0}Wages.xlsx'.format(output_path)
+        self.input_file = '{0}GrossWage.xlsx'.format(
+            input_path,
+            )
+        self.output_file = '{0}Wages.xlsx'.format(
+            output_path,
+            )
         self.excel_handler = ExcelHandler()
 
     def process_data(self) -> 'Wages':
         """Process the data.
 
-        Drop the blank columns, transpose, set column names and forward fill 'Year' values.
+        Drop the blank columns, transpose and forward fill 'Year' values.
 
         Returns:
-            Wages: An instance of the Wages class.
+        Wages: An instance of the Wages class.
         """
-        self.excel_handler.df = self.excel_handler.df.select(pl.exclude('column_1', 'column_2'))     
-        self.excel_handler.df = self.excel_handler.df.head(3)
-        self.excel_handler.df = self.excel_handler.df.transpose(
+        df = self.excel_handler.df
+        df = df.select(pl.exclude('column_1', 'column_2'))
+        df = df.head(6)
+
+        df = df.transpose(
             column_names=[
-            'Year', 'Quartal', 'Average Wage',
-            ]
+                'Year',
+                'Quartal',
+                'Average Wage',
+                'Wage Growth',
+                'Real Wage Growth',
+                'Nominal Wage (adjusted)',
+            ],
         )
 
-        self.excel_handler.df.with_columns(pl.col('Year').forward_fill())
+        df.with_columns(pl.col('Year').forward_fill())
+        self.excel_handler.df = df
 
     def run_it_all(self):
         """Execute all the steps to process the unemployment data."""
