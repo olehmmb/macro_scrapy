@@ -167,5 +167,5 @@ class GDPSpider(scrapy.Spider):
         file_url = response.urljoin(file_url)
         downloaded_file = MacroScrapyItem()
         downloaded_file['file_urls'] = [file_url]
-        downloaded_file['original_file_name'] = [name]
+        downloaded_file['original_file_name'] = name
         yield downloaded_file

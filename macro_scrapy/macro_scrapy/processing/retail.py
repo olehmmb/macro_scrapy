@@ -1,53 +1,65 @@
-import polars as pl
-from __init__ import (
-    combine_lists_monthly,
-    current_year,
-    folder_name,
-    list_growth,
-    monthly_data,
-    parent_folder,
-    row_selection,
-)
+"""Output for Retail calculation."""
+from __init__ import ExcelHandler, input_path, output_path
 
-file_name = "Retail"
-row_with_cars = 5
-row = 13
-columns = [219, 75, 21]
 
-yearly_retail_df = pl.read_excel(fr"{parent_folder}\data\{folder_name}\input\{folder_name}_{file_name}_Y.xlsx")
-quarterly_retail_df = pl.read_excel(fr"{parent_folder}\data\{folder_name}\input\{folder_name}_{file_name}_Q.xlsx")
-monthly_retail_df = pl.read_excel(fr"{parent_folder}\data\{folder_name}\input\{folder_name}_{file_name}_M.xlsx")
+class Retail:
+    """A class to handle the processing of Retail data."""
 
-monthly_retail_cars = row_selection(monthly_retail_df, row_with_cars, columns[0])
-quarterly_retail_cars = row_selection(quarterly_retail_df, row_with_cars, columns[1])
-yearly_retail_cars = row_selection(yearly_retail_df, row_with_cars, columns[2])
+    def __init__(self, freq, columns_to_skip) -> None:
+        """Initialize the Retail class.
 
-monthly_retail = row_selection(monthly_retail_df, row, columns[0])
-quarterly_retail = row_selection(quarterly_retail_df, row, columns[1])
-yearly_retail = row_selection(yearly_retail_df, row, columns[2])
+        Args:
+            freq: Any number of lists of strings.
+            columns_to_skip: Number of columns to skip when loading df
+        """
+        self.freq = freq
+        self.columns_to_skip = columns_to_skip
+        self.input_file = '{0}Retail_{1}.xlsx'.format(
+            input_path, self.freq,
+            )
+        self.output_file = '{0}Retail_{1}.xlsx'.format(
+            output_path, self.freq,
+            )
+        self.excel_handler = ExcelHandler()
 
-renamed_df_m_cars = monthly_retail_cars.select(pl.col("column_0").cast(pl.Float64).alias("With Cars"))
-renamed_df_q_cars = quarterly_retail_cars.select(pl.col("column_0").cast(pl.Float64).alias("With Cars"))
-renamed_df_y_cars = yearly_retail_cars.select(pl.col("column_0").cast(pl.Float64).alias("With Cars"))
+    def process_data(self) -> 'Retail':
+        """Process the data.
 
-renamed_df_m = monthly_retail.select(pl.col("column_0").cast(pl.Float64).alias("Without Cars"))
-renamed_df_q = quarterly_retail.select(pl.col("column_0").cast(pl.Float64).alias("Without Cars"))
-renamed_df_y = yearly_retail.select(pl.col("column_0").cast(pl.Float64).alias("Without Cars"))
+        Set column names and forward fill 'Year' values.
 
-growth_m_cars = list_growth(renamed_df_m_cars)
-growth_q_cars = list_growth(renamed_df_q_cars)
-growth_y_cars = list_growth(renamed_df_y_cars)
+        Returns:
+            Retail: An instance of the Retail class.
+        """
+        df = self.excel_handler.df
+        df[0, 2] = 'Time'
+        column_names = df[:28, 2]
+        column_names = column_names.to_list()
+        df = df[:28, self.columns_to_skip:]
+        df = df.transpose(
+            include_header=False,
+            column_names=column_names,
+        )
+        self.excel_handler.df = df
+        return self
 
-growth_m = list_growth(renamed_df_m)
-growth_q = list_growth(renamed_df_q)
-growth_y = list_growth(renamed_df_y)
+    def run_it_all(self):
+        """Execute all the steps to process the retail data."""
+        self.excel_handler.read_data(
+            excel_stream=self.input_file,
+            sheet_name='Sheet1',
+            skip_rows=7,
+            has_header=False,
+            )
+        self.process_data()
+        self.excel_handler.write_data(output_file=self.output_file)
 
-final_list_cars = combine_lists_monthly(growth_m_cars, growth_q_cars, growth_y_cars)
-final_list = combine_lists_monthly(growth_m, growth_q, growth_y)
-date_list = monthly_data(current_year - 2018)
 
-final_list_cars = final_list_cars + [0] * (len(date_list) - len(final_list))
-final_list = final_list + [0] * (len(date_list) - len(final_list))
+if __name__ == '__main__':
+    freq_columns_to_skip = [
+        ('M', 15),
+        ('Q', 7),
+        ('Y', 4),
+        ]
 
-final_df = pl.DataFrame({"Time": date_list, "With Cars": final_list_cars, "Without Cars": final_list})
-final_df.write_excel(fr"{parent_folder}\data\{folder_name}\output\{folder_name}_Retail.xlsx", worksheet = "Retail")
+    for freq, columns_to_skip in freq_columns_to_skip:
+        Retail(freq, columns_to_skip).run_it_all()
