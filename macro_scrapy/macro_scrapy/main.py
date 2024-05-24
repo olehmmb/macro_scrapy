@@ -14,7 +14,6 @@ def create_folder() -> None:
 def run_spiders() -> None:
     """Create CrawlerProcess and run multiple Scrapy spiders."""
     process = CrawlerProcess(get_project_settings())
-    process.crawl('inflation_spider')
     process.crawl('mfcr_spider')
     process.crawl('files_spider')
     process.crawl('tables_spider')
